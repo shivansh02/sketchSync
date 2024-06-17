@@ -5,6 +5,7 @@ export const useDraw = (onDraw: ({ ctx, currentPoint, prevPoint }: Draw) => void
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const prevPoint = useRef<null | Point>(null)
+  const [width, setWidth] = useState<number>(3)
 
   const onMouseDown = () => setMouseDown(true)
 
@@ -26,7 +27,7 @@ export const useDraw = (onDraw: ({ ctx, currentPoint, prevPoint }: Draw) => void
       const ctx = canvasRef.current?.getContext('2d')
       if (!ctx || !currentPoint) return
 
-      onDraw({ ctx, currentPoint, prevPoint: prevPoint.current })
+      onDraw({ ctx, currentPoint, prevPoint: prevPoint.current, width: width })
       prevPoint.current = currentPoint
     }
 

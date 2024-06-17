@@ -3,11 +3,13 @@
 import { FC, useState } from 'react'
 import { useDraw } from '../hooks/useDraw'
 import { ChromePicker } from 'react-color'
+import { Slider } from '../components/ui/slider'
 
 interface pageProps {}
 
 const page: FC<pageProps> = ({}) => {
   const [color, setColor] = useState<string>('#000')
+  const [width, setWidth] = useState<number>(3)
   const { canvasRef, onMouseDown, clear } = useDraw(drawLine)
 
   function drawLine({ prevPoint, currentPoint, ctx }: Draw) {
@@ -33,9 +35,12 @@ const page: FC<pageProps> = ({}) => {
     <div className='w-screen h-screen bg-white flex justify-center items-center'>
       <div className='flex flex-col gap-10 pr-10'>
         <ChromePicker color={color} onChange={(e) => setColor(e.hex)} />
+        
         <button type='button' className='p-2 rounded-md border border-black' onClick={clear}>
           Clear
         </button>
+        <p>Width</p>
+        <Slider defaultValue={[3]} max={10} step={1} onChange={(event: React.FormEvent<HTMLInputElement>) => setWidth(Number((event.target as HTMLInputElement).value))}/>
       </div>
       <canvas
         ref={canvasRef}
