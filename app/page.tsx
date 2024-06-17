@@ -9,17 +9,17 @@ interface pageProps {}
 
 const page: FC<pageProps> = ({}) => {
   const [color, setColor] = useState<string>('#000')
-  const [width, setWidth] = useState<number>(3)
+  const [width, setWidth] = useState<number[]>([3])
   const { canvasRef, onMouseDown, clear } = useDraw(drawLine)
 
   function drawLine({ prevPoint, currentPoint, ctx }: Draw) {
     const { x: currX, y: currY } = currentPoint
     const lineColor = color
-    const lineWidth = 5
+    const lineWidth = width
 
     let startPoint = prevPoint ?? currentPoint
     ctx.beginPath()
-    ctx.lineWidth = lineWidth
+    ctx.lineWidth = lineWidth[width.length-1]
     ctx.strokeStyle = lineColor
     ctx.moveTo(startPoint.x, startPoint.y)
     ctx.lineTo(currX, currY)
@@ -27,7 +27,7 @@ const page: FC<pageProps> = ({}) => {
 
     ctx.fillStyle = lineColor
     ctx.beginPath()
-    ctx.arc(startPoint.x, startPoint.y, 2, 0, 2 * Math.PI)
+    ctx.arc(startPoint.x, startPoint.y, 0, 0, 2 * Math.PI)
     ctx.fill()
   }
 
@@ -40,7 +40,7 @@ const page: FC<pageProps> = ({}) => {
           Clear
         </button>
         <p>Width</p>
-        <Slider defaultValue={[3]} max={10} step={1} onChange={(event: React.FormEvent<HTMLInputElement>) => setWidth(Number((event.target as HTMLInputElement).value))}/>
+        <Slider defaultValue={[3]} max={10} step={1} onValueChange={(i) => setWidth(i)}/>
       </div>
       <canvas
         ref={canvasRef}
