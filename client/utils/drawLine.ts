@@ -25,6 +25,6 @@ export const drawLine = ({ prevPoint, currentPoint, ctx, color, width }: DrawLin
 
     ctx.fillStyle = lineColor;
     ctx.beginPath();
-    ctx.arc(startPoint.x, startPoint.y, 2, 0, 2 * Math.PI);
+    ctx.arc(startPoint.x, startPoint.y, 0, 0.2, 0);
     ctx.fill();
 }
