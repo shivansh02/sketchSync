@@ -1,17 +1,19 @@
 type DrawLineProps = Draw & {
     color: string
+    width: number
 }
 
-export const drawLine = ({ prevPoint, currentPoint, ctx, color }: DrawLineProps): void => {
+export const drawLine = ({ prevPoint, currentPoint, ctx, color, width }: DrawLineProps): void => {
 
     if (!currentPoint) {
         throw new Error('currentPoint is undefined');
     }
 
-    
+
     const { x: currX, y: currY } = currentPoint;
     const lineColor: string = color;
-    const lineWidth: number = 5;
+    const lineWidth: number = width
+    // const lineWidth: number = 5;
 
     let startPoint: Point = prevPoint ?? currentPoint;
     ctx.beginPath();

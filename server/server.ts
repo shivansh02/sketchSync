@@ -19,13 +19,14 @@ x: number,
 type DrawLine = {
     prevPoint: Point | null,
     currentPoint: Point,
-    color: string
+    color: string,
+    width: number
 }
 
 io.on('connection', (socket) => {
     console.log("User connected")
-    socket.on("draw-line", ({prevPoint, currentPoint, color}: DrawLine)  => {
-        socket.broadcast.emit("draw-line", {prevPoint, currentPoint, color})
+    socket.on("draw-line", ({prevPoint, currentPoint, color, width}: DrawLine)  => {
+        socket.broadcast.emit("draw-line", {prevPoint, currentPoint, color, width})
     })
 
 })

@@ -14,19 +14,20 @@ type DrawLineProps = {
   prevPoint: Point | null
   currentPoint: Point
   color: string
+  width: number
 }
 
 const page: FC<pageProps> = ({}) => {
   const [color, setColor] = useState<string>('#000')
-  const [width, setWidth] = useState<number[]>([3])
+  const [width, setWidth] = useState<number>(3)
   const { canvasRef, onMouseDown, clear } = useDraw(createLine)
 
 
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d')
     if (!ctx) return
-    socket.on("draw-line", ({prevPoint, currentPoint, color}: DrawLineProps) => {
-      drawLine({prevPoint, currentPoint, ctx, color})
+    socket.on("draw-line", ({prevPoint, currentPoint, color, width}: DrawLineProps) => {
+      drawLine({prevPoint, currentPoint, ctx, color, width})
     })
 
     return () => {
@@ -38,8 +39,8 @@ const page: FC<pageProps> = ({}) => {
 
 
   function createLine({ prevPoint, currentPoint, ctx }: Draw) {
-    socket.emit("draw-line", {prevPoint, currentPoint, color})
-    drawLine({ prevPoint, currentPoint, ctx, color })
+    socket.emit("draw-line", {prevPoint, currentPoint, color, width})
+    drawLine({ prevPoint, currentPoint, ctx, color, width})
   }
 
   return (
@@ -51,7 +52,7 @@ const page: FC<pageProps> = ({}) => {
           Clear
         </button>
         <p>Width</p>
-        <Slider defaultValue={[3]} max={10} step={1} onValueChange={(i) => setWidth(i)}/>
+        <Slider defaultValue={[3]} max={10} step={1} onValueChange={(i) => setWidth(i[i.length - 1])}/>
       </div>
       <canvas
         ref={canvasRef}
