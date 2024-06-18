@@ -3,6 +3,12 @@ type DrawLineProps = Draw & {
 }
 
 export const drawLine = ({ prevPoint, currentPoint, ctx, color }: DrawLineProps): void => {
+
+    if (!currentPoint) {
+        throw new Error('currentPoint is undefined');
+    }
+
+    
     const { x: currX, y: currY } = currentPoint;
     const lineColor: string = color;
     const lineWidth: number = 5;
@@ -17,6 +23,6 @@ export const drawLine = ({ prevPoint, currentPoint, ctx, color }: DrawLineProps)
 
     ctx.fillStyle = lineColor;
     ctx.beginPath();
-    ctx.arc(startPoint.x, startPoint.y, 0, 0, 2 * Math.PI);
+    ctx.arc(startPoint.x, startPoint.y, 2, 0, 2 * Math.PI);
     ctx.fill();
 }

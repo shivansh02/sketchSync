@@ -12,20 +12,20 @@ const io = new Server(server, {
 })
 
 type Point = {
-    x: number,
+x: number,
     y: number
 }
 
 type DrawLine = {
     prevPoint: Point | null,
-    currPoint: Point,
+    currentPoint: Point,
     color: string
 }
 
 io.on('connection', (socket) => {
     console.log("User connected")
-    socket.on("draw-line", ({prevPoint, currPoint, color}: DrawLine)  => {
-        socket.broadcast.emit("draw-line", {prevPoint, currPoint, color})
+    socket.on("draw-line", ({prevPoint, currentPoint, color}: DrawLine)  => {
+        socket.broadcast.emit("draw-line", {prevPoint, currentPoint, color})
     })
 
 })

@@ -1,40 +1,45 @@
 'use client'
 
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useDraw } from '../hooks/useDraw'
 import { ChromePicker } from 'react-color'
 import { Slider } from '../components/ui/slider'
 import {io} from 'socket.io-client'
-
+import { drawLine } from '@/utils/drawLine'
 const socket = io('http://localhost:3001')
 
 interface pageProps {}
 
+type DrawLineProps = {
+  prevPoint: Point | null
+  currentPoint: Point
+  color: string
+}
+
 const page: FC<pageProps> = ({}) => {
   const [color, setColor] = useState<string>('#000')
   const [width, setWidth] = useState<number[]>([3])
-  const { canvasRef, onMouseDown, clear } = useDraw(drawLine)
+  const { canvasRef, onMouseDown, clear } = useDraw(createLine)
 
-  function drawLine({ prevPoint, currentPoint, ctx }: Draw) {
-    const { x: currX, y: currY } = currentPoint
-    const lineColor = color
-    const lineWidth = width
 
-    let startPoint = prevPoint ?? currentPoint
-    ctx.beginPath()
-    ctx.lineWidth = lineWidth[width.length-1]
-    ctx.strokeStyle = lineColor
-    ctx.moveTo(startPoint.x, startPoint.y)
-    ctx.lineTo(currX, currY)
-    ctx.stroke()
+  useEffect(() => {
+    const ctx = canvasRef.current?.getContext('2d')
+    if (!ctx) return
+    socket.on("draw-line", ({prevPoint, currentPoint, color}: DrawLineProps) => {
+      drawLine({prevPoint, currentPoint, ctx, color})
+    })
 
-    ctx.fillStyle = lineColor
-    ctx.beginPath()
-    ctx.arc(startPoint.x, startPoint.y, 0, 0, 2 * Math.PI)
-    ctx.fill()
-  }
+    return () => {
+      socket.off('draw-line')
+    }
+
+
+  }, [canvasRef])
+
 
   function createLine({ prevPoint, currentPoint, ctx }: Draw) {
+    socket.emit("draw-line", {prevPoint, currentPoint, color})
+    drawLine({ prevPoint, currentPoint, ctx, color })
   }
 
   return (

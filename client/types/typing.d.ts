@@ -2,7 +2,7 @@ type Draw = {
     ctx: CanvasRenderingContext2D
     currentPoint: Point
     prevPoint: Point | null
-    width: Number
+    // width: Number
   }
   
   type Point = { x: number; y: number }
