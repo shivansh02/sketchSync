@@ -1,5 +1,3 @@
-declare var require: any
-
 const express = require("express")
 const http = require("http")
 const app = express()
@@ -25,8 +23,13 @@ type DrawLine = {
 }
 
 io.on('connection', (socket) => {
+    console.log("User connected")
     socket.on("draw-line", ({prevPoint, currPoint, color}: DrawLine)  => {
         socket.broadcast.emit("draw-line", {prevPoint, currPoint, color})
     })
 
+})
+
+server.listen(3001, () => {
+    console.log("Server running on port 3001")
 })

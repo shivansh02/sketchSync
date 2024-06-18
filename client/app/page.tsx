@@ -4,6 +4,9 @@ import { FC, useState } from 'react'
 import { useDraw } from '../hooks/useDraw'
 import { ChromePicker } from 'react-color'
 import { Slider } from '../components/ui/slider'
+import {io} from 'socket.io-client'
+
+const socket = io('http://localhost:3001')
 
 interface pageProps {}
 
@@ -29,6 +32,9 @@ const page: FC<pageProps> = ({}) => {
     ctx.beginPath()
     ctx.arc(startPoint.x, startPoint.y, 0, 0, 2 * Math.PI)
     ctx.fill()
+  }
+
+  function createLine({ prevPoint, currentPoint, ctx }: Draw) {
   }
 
   return (
