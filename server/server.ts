@@ -12,7 +12,7 @@ const io = new Server(server, {
 })
 
 type Point = {
-x: number,
+    x: number,
     y: number
 }
 
@@ -25,10 +25,19 @@ type DrawLine = {
 
 io.on('connection', (socket) => {
     console.log("User connected")
-    socket.on("draw-line", ({prevPoint, currentPoint, color, width}: DrawLine)  => {
-        socket.broadcast.emit("draw-line", {prevPoint, currentPoint, color, width})
+
+    socket.on("join-room", (room) => {
+        socket.join(room)
+        console.log(`User joined room: ${room}`)
     })
 
+    socket.on("draw-line", ({ prevPoint, currentPoint, color, width, room }: DrawLine & { room: string }) => {
+        socket.to(room).emit("draw-line", { prevPoint, currentPoint, color, width })
+    })
+
+    socket.on("disconnect", () => {
+        console.log("User disconnected")
+    })
 })
 
 server.listen(3001, () => {
