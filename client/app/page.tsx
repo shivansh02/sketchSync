@@ -1,6 +1,6 @@
 "use client"
 
-import { FC, useState } from "react"
+import { FC, useState, useEffect } from "react"
 import {
     Card,
     CardContent,
@@ -20,13 +20,37 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
 
 interface pageProps { }
 
+
 const page: FC<pageProps> = ({ }) => {
     const [open, setOpen] = useState(false);
+    const [roomId, setRoomId] = useState<string>("")
     const openModal = () => {
         setOpen(true)
+    }
+
+    useEffect (() => {
+        setRoomId(generateRoomId())
+    },[])    
+
+    const generateRoomId = () => {
+        const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let result = ""
+        for (let i = 0; i < 6; i++) {
+            result += charset.charAt(Math.floor(Math.random() * charset.length))
+        }
+        return result
+    }
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(roomId)
+        toast.success('Room ID copied to clipboard!')
+
+
     }
 
     return (
@@ -41,8 +65,8 @@ const page: FC<pageProps> = ({ }) => {
                     <Input type="text" id="username" placeholder="johndoe" className="mb-4 mt-2"/>
                     <Label htmlFor="roomId" className="mt-0">Room ID</Label>
                     <div className="flex w-64 max-w-sm items-start space-x-2">
-                        <Input type="text" placeholder="roomID" className="mb-4 mt-2"/>
-                        <Button type="submit" variant="secondary">Copy</Button>
+                        <Input type="text" placeholder="roomID" className="mb-4 mt-2" value={roomId} readOnly/>
+                        <Button type="submit" variant="secondary" onClick={handleCopy}>Copy</Button>
                     </div>
                     <Button type="submit" variant="default" className="w-full">Create Room</Button>
                     <div className="flex items-center my-6">
@@ -79,6 +103,7 @@ const page: FC<pageProps> = ({ }) => {
                 <CardFooter>
                 </CardFooter>
             </Card>
+            <Toaster position="top-center" />
         </div>
     )
 }
