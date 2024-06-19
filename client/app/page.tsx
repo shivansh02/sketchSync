@@ -1,82 +1,86 @@
-'use client'
+"use client"
 
-import { FC, useEffect, useState } from 'react'
-import { useDraw } from '../hooks/useDraw'
-import { ChromePicker } from 'react-color'
-import { Slider } from '../components/ui/slider'
-import { io } from 'socket.io-client'
-import { drawLine } from '@/utils/drawLine'
-const socket = io('http://localhost:3001')
+import { FC, useState } from "react"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
-interface pageProps {}
+interface pageProps { }
 
-type DrawLineProps = {
-  prevPoint: Point | null
-  currentPoint: Point
-  color: string
-  width: number
-  room: string
-}
-
-const page: FC<pageProps> = ({}) => {
-  const [color, setColor] = useState<string>('#000')
-  const [width, setWidth] = useState<number>(3)
-  const [room, setRoom] = useState<string>('')
-  const { canvasRef, onMouseDown, clear } = useDraw(createLine)
-
-  useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d')
-    if (!ctx) return
-
-    socket.on("draw-line", ({ prevPoint, currentPoint, color, width }: DrawLineProps) => {
-      drawLine({ prevPoint, currentPoint, ctx, color, width })
-    })
-
-    return () => {
-      socket.off('draw-line')
+const page: FC<pageProps> = ({ }) => {
+    const [open, setOpen] = useState(false);
+    const openModal = () => {
+        setOpen(true)
     }
-  }, [canvasRef])
 
-  function createLine({ prevPoint, currentPoint, ctx }: Draw) {
-    socket.emit("draw-line", { prevPoint, currentPoint, color, width, room })
-    drawLine({ prevPoint, currentPoint, ctx, color, width })
-  }
-
-  const joinRoom = () => {
-    socket.emit("join-room", room)
-  }
-
-  return (
-    <div className='w-screen h-screen bg-white flex justify-center items-center'>
-      <div className='flex flex-col gap-10 pr-10'>
-        <ChromePicker color={color} onChange={(e) => setColor(e.hex)} />
-        
-        <button type='button' className='p-2 rounded-md border border-black' onClick={clear}>
-          Clear
-        </button>
-        <p>Width</p>
-        <Slider defaultValue={[3]} max={10} step={1} onValueChange={(i) => setWidth(i[i.length - 1])}/>
-
-        <input
-          type='text'
-          value={room}
-          onChange={(e) => setRoom(e.target.value)}
-          placeholder='Enter room name'
-          className='p-2 border border-black rounded-md'
-        />
-        <button type='button' className='p-2 rounded-md border border-black' onClick={joinRoom}>
-          Join Room
-        </button>
-      </div>
-      <canvas
-        ref={canvasRef}
-        onMouseDown={onMouseDown}
-        width={750}
-        height={750}
-        className='border border-black rounded-md'
-      />
-    </div>
-  )
+    return (
+        <div className="w-screen h-screen bg-white flex justify-center items-center">
+            <Card>
+                <CardHeader>
+                    <CardTitle>SketchSync</CardTitle>
+                    <CardDescription>Draw with your friends in real-time.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Label htmlFor="username">Username</Label>
+                    <Input type="text" id="username" placeholder="johndoe" className="mb-4 mt-2"/>
+                    <Label htmlFor="roomId" className="mt-0">Room ID</Label>
+                    <div className="flex w-64 max-w-sm items-start space-x-2">
+                        <Input type="text" placeholder="roomID" className="mb-4 mt-2"/>
+                        <Button type="submit" variant="secondary">Copy</Button>
+                    </div>
+                    <Button type="submit" variant="default" className="w-full">Create Room</Button>
+                    <div className="flex items-center my-6">
+                        <hr className="flex-grow border-t border-gray-300" />
+                        <Label className="px-2 text-gray-500">OR</Label>
+                        <hr className="flex-grow border-t border-gray-300" />
+                    </div>
+                    <Button type="submit" variant="outline" className="w-full" onClick={openModal}>Join Room</Button>
+                    {/* <Dialog>
+                        <DialogTrigger >
+                        <Button type="submit" variant="outline" className="">Join Room</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                <DialogDescription>
+                                    This action cannot be undone. This will permanently delete your account
+                                    and remove your data from our servers.
+                                </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog> */}
+                    <Dialog open={open} onOpenChange={setOpen} >
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogTitle>
+                                Join a room
+                            </DialogTitle>
+                            <Input type="text" id="username" placeholder="johndoe"/>
+                            <Input type="text" id="roomId" placeholder="room-ID"/>
+                            <Button type="submit" variant="default" onClick={openModal}>Join Room</Button>
+                        </DialogContent>
+                    </Dialog>
+                </CardContent>
+                <CardFooter>
+                </CardFooter>
+            </Card>
+        </div>
+    )
 }
 
 export default page
