@@ -23,10 +23,13 @@ import {
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 
+import {useRouter} from 'next/navigation'
+
 interface pageProps { }
 
 
 const page: FC<pageProps> = ({ }) => {
+    const router = useRouter()
     const [open, setOpen] = useState(false);
     const [roomId, setRoomId] = useState<string>("")
     const openModal = () => {
@@ -53,6 +56,11 @@ const page: FC<pageProps> = ({ }) => {
 
     }
 
+    const handleSubmit = () => {
+        console.log("submitted")
+        router.push(`/room/${roomId}`)
+    }
+
     return (
         <div className="w-screen h-screen bg-white flex justify-center items-center">
             <Card>
@@ -68,7 +76,7 @@ const page: FC<pageProps> = ({ }) => {
                         <Input type="text" placeholder="roomID" className="mb-4 mt-2" value={roomId} readOnly/>
                         <Button type="submit" variant="secondary" onClick={handleCopy}>Copy</Button>
                     </div>
-                    <Button type="submit" variant="default" className="w-full">Create Room</Button>
+                    <Button type="submit" variant="default" className="w-full" onClick={handleSubmit}>Create Room</Button>
                     <div className="flex items-center my-6">
                         <hr className="flex-grow border-t border-gray-300" />
                         <Label className="px-2 text-gray-500">OR</Label>
