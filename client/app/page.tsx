@@ -54,8 +54,6 @@ const page: FC<pageProps> = ({ }) => {
     const handleCopy = () => {
         navigator.clipboard.writeText(roomId)
         toast.success('Room ID copied to clipboard!')
-
-
     }
 
     const handleCreate = () => {
@@ -85,7 +83,7 @@ const page: FC<pageProps> = ({ }) => {
                     <Label htmlFor="roomId" className="mt-0">Room ID</Label>
                     <div className="flex w-64 max-w-sm items-start space-x-2">
                         <Input type="text" placeholder="roomID" className="mb-4 mt-2" value={roomId} readOnly/>
-                        <Button type="submit" variant="secondary" onClick={handleCopy}>Copy</Button>
+                        <Button type="submit" variant="secondary" className="mt-2" onClick={handleCopy}>Copy</Button>
                     </div>
                     <Button type="submit" variant="default" className="w-full" onClick={handleCreate}>Create Room</Button>
                     <div className="flex items-center my-6">
